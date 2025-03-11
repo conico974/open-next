@@ -311,4 +311,9 @@ File ${fullFilePath} does not exist
   }
 
   logger.debug("copyTracedFiles:", Date.now() - tsStart, "ms");
+
+  return {
+    tracedFiles: filesToCopy,
+    outputNextDir,
+  };
 }

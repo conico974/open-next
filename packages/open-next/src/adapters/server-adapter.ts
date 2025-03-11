@@ -1,8 +1,12 @@
+import { applyV8Cache } from "utils/v8.js";
+if (process.env.ENABLE_EXPERIMENTAL_V8_CACHE === "true") {
+  applyV8Cache();
+}
+
 // We load every config here so that they are only loaded once
 // and during cold starts
 import { BuildId } from "config/index.js";
 
-import { createMainHandler } from "../core/createMainHandler.js";
 import { setNodeEnv } from "./util.js";
 
 // We load every config here so that they are only loaded once
@@ -17,7 +21,9 @@ globalThis.internalFetch = fetch;
 /////////////
 // Handler //
 /////////////
-
+const createMainHandler = await import("../core/createMainHandler.js").then(
+  (m) => m.createMainHandler,
+);
 export const handler = await createMainHandler();
 
 //////////////////////

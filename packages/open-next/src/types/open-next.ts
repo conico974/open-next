@@ -313,6 +313,17 @@ export interface FunctionOptions extends DefaultFunctionOptions {
    * @deprecated This is not supported in 14.2+
    */
   experimentalBundledNextServer?: boolean;
+
+  /**
+   * * **WARNING: Use at your own risk**
+   * When enabled, the bytecode will be precompiled for every traced file.
+   * The compilation are done during build, and it will require both deployed and build time to use similar node process (same version, same architecture, same node options).
+   * In case of a mismatch, the function will fallback to the original file and log an error with the required version.
+   * This will reduce the cold start time but will increase the bundle size and could break things.
+   * Cannot be used on cloudflare.
+   * @default false
+   */
+  experimentalV8Cache?: boolean;
 }
 
 export type RouteTemplate =

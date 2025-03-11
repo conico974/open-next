@@ -12,6 +12,7 @@ import { bundleNextServer } from "./bundleNextServer.js";
 import { compileCache } from "./compileCache.js";
 import { copyTracedFiles } from "./copyTracedFiles.js";
 import { generateEdgeBundle } from "./edge/createEdgeBundle.js";
+import { generateV8Cache } from "./generateV8Cache.js";
 import * as buildHelper from "./helper.js";
 import { installDependencies } from "./installDeps.js";
 
@@ -153,13 +154,21 @@ async function generateBundle(
   buildHelper.copyEnvFile(appBuildOutputPath, packagePath, outputPath);
 
   // Copy all necessary traced files
-  await copyTracedFiles({
+  const { tracedFiles, outputNextDir } = await copyTracedFiles({
     buildOutputPath: appBuildOutputPath,
     packagePath,
     outputDir: outputPath,
     routes: fnOptions.routes ?? ["app/page.tsx"],
     bundledNextServer: isBundled,
   });
+
+  if (fnOptions.experimentalV8Cache) {
+    generateV8Cache({
+      outputDir: outputPath,
+      outputNextDir,
+      filesToCopy: tracedFiles,
+    });
+  }
 
   // Build Lambda code
   // note: bundle in OpenNext package b/c the adapter relies on the
